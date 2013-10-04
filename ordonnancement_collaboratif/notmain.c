@@ -1,6 +1,8 @@
 #include "process.h"
 #include "dispatcher.h"
 
+#define STACK_SIZE 128
+
 struct ctx_s ctx_A;
 struct ctx_s ctx_B;
 struct ctx_s ctx_init;
