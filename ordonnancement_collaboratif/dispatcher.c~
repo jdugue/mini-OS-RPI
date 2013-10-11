@@ -2,8 +2,6 @@
 #include "stdint.h"
 
 void switch_to(struct ctx_s* ctx){
-
-	int i,j;
 	
 	__asm("mov %0, lr" : "=r"(current_ctx->pc));
 	__asm("mov %0, sp" : "=r"(current_ctx->sp));

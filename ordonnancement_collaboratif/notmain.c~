@@ -7,8 +7,6 @@ struct ctx_s ctx_A;
 struct ctx_s ctx_B;
 struct ctx_s ctx_init;
 
-struct ctx_s * current_ctx;
-
 void
 ping()
 {
