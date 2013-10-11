@@ -1,7 +1,7 @@
 #include "dispatcher.h"
 
-void switch_to(struct ctx_s* ctx)
+void switch_to(ctx_s* ctx)
 {	
-	current_ctx.pc = ctx.pc;
-	current_ctx.sp = ctx.sp;
+	current_ctx->pc = ctx->pc;
+	current_ctx->sp = ctx->sp;
 }
