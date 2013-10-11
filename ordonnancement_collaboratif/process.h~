@@ -8,9 +8,4 @@ typedef struct ctx_s {
 	uint32_t * registres;
 }ctx_s;
 
-void init_ctx(ctx_s* ctx, func_t f, unsigned int stack_size){
-	uint32_t * pc; //idem
-	uint32_t registres[13];
-};
-
 void init_ctx(ctx_s* ctx, func_t f, unsigned int stack_size);
