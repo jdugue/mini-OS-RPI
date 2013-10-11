@@ -54,6 +54,8 @@ notmain ( void )
   current_ctx = &ctx_init;
 
   switch_to(&ctx_A);
+
+  return 0;
 }
 
 
