@@ -1,5 +1,7 @@
 #include "process.h"
+#include "sched.h"
+#define STACK_SIZE 1024
 
-void switch_to(struct ctx_s* ctx);
+void ctx_switch(struct pcb_s* pcb);
 
-static ctx_s * current_ctx;
+static pcb_element * current_process;

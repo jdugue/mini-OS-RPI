@@ -2,10 +2,14 @@
 
 typedef void (*func_t) ( void);
 
-typedef struct ctx_s {
+typedef enum {READY = 1, RUNNING = 2, BLOCKED = 3, NEW = 4, TERMINATED = 5} pState;
+
+typedef struct pcb_s {
 	uint32_t * sp ; //equivalent a uint32_t ?
 	uint32_t * pc; //idem
-	uint32_t registres[13];
-}ctx_s;
+	pState state;
+	void * arg;
+	// uint32_t registres[13];  // dans la pile
+}pcb_s;
 
-void init_ctx(ctx_s* ctx, func_t f, unsigned int stack_size);
+void init_pcb(pcb_s* pcb, func_t f, unsigned int stack_size, void* arg);

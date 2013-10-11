@@ -1,3 +1,6 @@
-void switch_to(struct ctx_s* ctx);
+#include "process.h"
+#define STACK_SIZE 1024
 
-static ctx_s * current_ctx;
+void ctx_switch(struct pcb_s* pcb);
+
+static pcb_element * current_process;
