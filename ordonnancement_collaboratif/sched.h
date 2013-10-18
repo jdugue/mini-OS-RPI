@@ -1,15 +1,9 @@
 #include "process.h"
 static pcb_s* next_running;
 
-typedef struct pcb_element {
-	pcb_s* pcb;
-	pcb_s* next;
-}pcb_element;
-
-
 typedef struct pcb_list {
-	pcb_element* first;
-	pcb_element* last;
+	pcb_s* first;
+	pcb_s* last;
 }pcb_list;
 
 static pcb_list pList;

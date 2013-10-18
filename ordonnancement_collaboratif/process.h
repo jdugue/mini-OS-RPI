@@ -9,6 +9,7 @@ typedef struct pcb_s {
 	uint32_t * pc; //idem
 	pState state;
 	void * arg;
+	pcb_s* next;
 	// uint32_t registres[13];  // dans la pile
 }pcb_s;
 

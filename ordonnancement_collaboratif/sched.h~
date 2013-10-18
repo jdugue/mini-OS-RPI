@@ -1,3 +1,4 @@
+#include "process.h"
 static pcb_s* next_running;
 
 typedef struct pcb_element {

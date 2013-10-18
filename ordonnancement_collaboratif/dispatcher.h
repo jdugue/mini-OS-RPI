@@ -4,4 +4,4 @@
 
 void ctx_switch(struct pcb_s* pcb);
 
-static pcb_element * current_process;
+static pcb_s * current_process;

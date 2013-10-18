@@ -5,18 +5,15 @@ void create_process(func_t f, void* args){
 	
 	//on crée un process et un element de list	
 	pcb_s nProcess;
-	pcb_element elem;
 
 	//on affecte le next du dernier element de la liste au nouvel element
-	elem.pcb = &nProcess;
-	pList.last->next = &elem;
+	pList.last->next = &nProcess;
 
 	//on décale le last au nouveau last
-	pList.last = &elem;
+	pList.last = &nProcess;
 
 	//on relie le dernier element de la liste au premier
-	elem.next = pList.first;  
-	pList->next = null;
+	nProcess.next = pList.first;  
 
 	init_pcb( pcb_s* toInit, func_t f, STACK_SIZE ,void* args );
 }
