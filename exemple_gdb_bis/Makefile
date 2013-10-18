@@ -1,7 +1,7 @@
 ARMGNU ?= arm-none-eabi
 
 OBJDUMP = $(ARMGNU)-objdump
-LD = $(ARMGNU)-ld 
+LD = $(ARMGNU)-ld
 OBJCOPY = $(ARMGNU)-objcopy
 CC = $(ARMGNU)-gcc
 AS = $(ARMGNU)-as
@@ -9,7 +9,7 @@ AS = $(ARMGNU)-as
 CFLAGS = -Wall -nostdlib -fomit-frame-pointer -mno-apcs-frame -nostartfiles -ffreestanding -g -march=armv6z -marm
 ASFLAGS = -g -march=armv6z
 
-C_FILES=notmain.c hw.c allocateMemory.c process.c dispatcher.c sched.c
+C_FILES=notmain.c
 AS_FILES=vectors.s
 
 OBJS = $(patsubst %.s,%.o, $(AS_FILES))

@@ -1,9 +1,10 @@
 #include "dispatcher.h"
 #include "stdint.h"
 
-void switch_to(struct ctx_s* ctx){
+/*void ctx_switch(struct _s* ctx){
 	
-	__asm("mov %0, lr" : "=r"(current_ctx->pc));
+	__asm volatile("pop {r0-r12,lr}");
+	/*__asm("mov %0, lr" : "=r"(current_ctx->pc));
 	__asm("mov %0, sp" : "=r"(current_ctx->sp));
 
 	__asm("mov %0, r0": "=r"(current_ctx->registres[0]));
@@ -39,6 +40,8 @@ void switch_to(struct ctx_s* ctx){
 	__asm("mov r9, %0" : : "r"(current_ctx->registres[9]));
 	__asm("mov r10, %0" : : "r"(current_ctx->registres[10]));
 	__asm("mov r11, %0" : : "r"(current_ctx->registres[11]));
-	__asm("mov r12, %0" : : "r"(current_ctx->registres[12]));
+	__asm("mov r12, %0" : : "r"(current_ctx->registres[12]));*/
+
+
 	
-}
+}*/
