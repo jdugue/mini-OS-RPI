@@ -40,8 +40,11 @@ void yield(){
 	if(current_process->state == NEW)
 	{
 		__asm("mov sp, %0" : : "r"(current_process->sp));
-		__asm("mov lr, %0" : : "r"(current_process->pc));
 		current_process->state=RUNNING;
+		current_process->pc(current_process->arg);
+		current_process->state=TERMINATED;
+		yield();
+		//__asm("mov lr, %0" : : "r"(current_process->pc));
 	}
 	else if (current_process->state == RUNNING)
 	{

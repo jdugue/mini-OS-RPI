@@ -30,7 +30,7 @@ funcA ()
 		cptA ++;
 		yield();
 	}
-killme()
+killme();
 }
 void
 funcB ()
@@ -40,7 +40,7 @@ funcB ()
 		cptB += 2 ;
 		yield();
 	}
-killme()
+killme();
 }
 
 //------------------------------------------------------------------------
