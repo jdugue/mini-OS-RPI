@@ -101,6 +101,13 @@ void __attribute__((naked)) ctx_switch() {
 
 void start_scheduler()
 {
+	//pcb_s tempProcess;
+	//init_pcb(&tempProcess, 0, STACK_SIZE, 0);
+	//tempProcess.state  = TERMINATED;
+	//tempProcess.next = pList.first;
+	//current_process = &tempProcess;
+	current_process = pList.first;
+	
 	DISABLE_IRQ();
 	init_hw();
 	set_next_tick_and_enable_timer_irq();

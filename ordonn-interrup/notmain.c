@@ -26,7 +26,7 @@ void
 funcA ()
 {
 	int cptA = 0;
-	while( cptA < 3 ) {
+	while( 1 ) {
 		cptA ++;
 	}
 }
@@ -34,7 +34,7 @@ void
 funcB ()
 {
 	int cptB = 1;
-	while( cptB < 5 ) {
+	while( 1 ) {
 		cptB += 2 ;
 	}
 }

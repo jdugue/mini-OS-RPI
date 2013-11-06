@@ -3,5 +3,5 @@ fs cmd
 wh cmd 12
 target remote:1234
 b notmain
-b yield
+b ctx_switch
 source include.gdb
