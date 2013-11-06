@@ -3,13 +3,13 @@
 #ifndef __PROCESS_H
 #define __PROCESS_H
 
-typedef void (*func_t) ( void);
+typedef void (*func_t) (void*);
 
 typedef enum {READY, RUNNING, BLOCKED, NEW, TERMINATED} pState;
 
 typedef struct pcb_s {
-	uint32_t * sp ; //equivalent a uint32_t ?
-	uint32_t * pc; //idem
+	uint32_t * sp ; 
+	func_t pc; 
 	pState state;
 	void * arg;
 	struct pcb_s* next;
