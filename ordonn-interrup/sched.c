@@ -1,5 +1,6 @@
 #include "sched.h"
 #include "dispatcher.h"
+#include "hw.h"
 
 void create_process(func_t f, void* args){
 	
@@ -29,6 +30,8 @@ void create_process(func_t f, void* args){
 
 void __attribute__((naked)) ctx_switch() {
 	
+	DISABLE_IRQ();
+	
 	__asm("sub lr, lr, #4");
 	__asm("srsdb sp!, #0x13");
 	__asm("cps #0x13");
@@ -49,7 +52,7 @@ void __attribute__((naked)) ctx_switch() {
 		current_process->state=RUNNING;
 		
 		// Rearme du timer
-		set_tick_and_enable_timer();
+		set_next_tick_and_enable_timer_irq();
 		ENABLE_IRQ();
 		
 		current_process->pc(current_process->arg);
@@ -86,11 +89,13 @@ void __attribute__((naked)) ctx_switch() {
 	}
 	
 	// Rearme du timer
-	set_tick_and_enable_timer();
+	set_next_tick_and_enable_timer_irq();
 	ENABLE_IRQ();
 	
 	__asm("rfefd sp!");
 		
+		
+	ENABLE_IRQ();
 }
 
 
@@ -98,7 +103,7 @@ void start_scheduler()
 {
 	DISABLE_IRQ();
 	init_hw();
-	set_tick_and_enable_timer();
+	set_next_tick_and_enable_timer_irq();
 	ENABLE_IRQ();
 }
 

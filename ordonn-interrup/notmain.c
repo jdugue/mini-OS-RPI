@@ -28,7 +28,6 @@ funcA ()
 	int cptA = 0;
 	while( cptA < 3 ) {
 		cptA ++;
-		yield();
 	}
 }
 void
@@ -37,7 +36,6 @@ funcB ()
 	int cptB = 1;
 	while( cptB < 5 ) {
 		cptB += 2 ;
-		yield();
 	}
 }
 
