@@ -86,6 +86,9 @@ void __attribute__((naked)) ctx_switch() {
 		{
 			current_process->next = current_process->next->next;
 		}
+
+		//TODO
+		//Se rappeler de liberer la memoire du pcb.
 	}
 	
 	// Rearme du timer
@@ -95,6 +98,7 @@ void __attribute__((naked)) ctx_switch() {
 	__asm("rfefd sp!");
 		
 		
+	// Pourquoi on a mis ca la????
 	ENABLE_IRQ();
 }
 
@@ -115,6 +119,13 @@ void start_scheduler()
 }
 
 void schedule() {
-	current_process = current_process->next;
+	//TODO
+	// Confirmation prof
+	do 
+	{
+		current_process = current_process->next;
+	}
+	while ( current_process->state == BLOCKED );
+
 }
 
