@@ -2,6 +2,10 @@
 #include "dispatcher.h"
 #include "hw.h"
 
+#define STACK_SIZE 1024
+
+pcb_s * current_process;
+
 void create_process(func_t f, void* args){
 	
 	//on crée un process et un element de list	
@@ -105,12 +109,13 @@ void __attribute__((naked)) ctx_switch() {
 
 void start_scheduler()
 {
-	//pcb_s tempProcess;
-	//init_pcb(&tempProcess, 0, STACK_SIZE, 0);
-	//tempProcess.state  = TERMINATED;
-	//tempProcess.next = pList.first;
-	//current_process = &tempProcess;
-	current_process = pList.first;
+	//current_process = (pcb_s**) AllocateMemory(sizeof(pcb_s*));
+	pcb_s* tempProcess = (pcb_s*) AllocateMemory(sizeof(pcb_s));
+	init_pcb(tempProcess, 0, STACK_SIZE, 0);
+	tempProcess->state  = TERMINATED;
+	tempProcess->next = pList.first;
+	current_process = tempProcess;
+	//current_process = pList.first;
 	
 	DISABLE_IRQ();
 	init_hw();

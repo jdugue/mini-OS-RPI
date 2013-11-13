@@ -1,4 +1,8 @@
 #include "sem.h"
+#include "dispatcher.h"
+#include "sched.h"
+
+extern pcb_s * current_process;
 
 void sem_init(struct sem_s* sem, unsigned int val)
 {
@@ -9,7 +13,7 @@ void sem_init(struct sem_s* sem, unsigned int val)
 	sem->jetons = val;
 }
 
-void sem_down(struct sem_s* sem);
+void sem_down(struct sem_s* sem)
 {
 	sem->jetons--;
 	if ( sem->jetons < 0 )
@@ -38,7 +42,7 @@ void sem_down(struct sem_s* sem);
 	}	
 } 
 
-void sem_up(struct sem_s* sem);
+void sem_up(struct sem_s* sem)
 {
 	sem->jetons++;
 
@@ -48,7 +52,7 @@ void sem_up(struct sem_s* sem);
 		process_s* temp = sem->list->first;
 		sem->list->first = sem->list->first->next;
 
-		FreeAllocateMemory((uint32_t*) temp); //TODO tester cette ligne
+		FreeAllocatedMemory((uint32_t*) temp); //TODO tester cette ligne
 	}
 	
 	//Pas de ctx_switch car le processus continue à s'éxecuter.
@@ -56,13 +60,14 @@ void sem_up(struct sem_s* sem);
 
 
 
-void mtx_init(struct mtx_s* mutex)
+mtx_s* mtx_init()
 {
-	mutex = (mtx_s*) AllocateMemory(sizeof(mtx_s));
+	mtx_s* mutex = (mtx_s*) AllocateMemory(sizeof(mtx_s));
 	mutex->list = (process_list_s*) AllocateMemory(sizeof(process_list_s));
 	mutex->list->first = 0;
 	mutex->list->last = 0;
 	mutex->jeton = 1;
+	return mutex;
 }
 
 void mtx_lock(struct mtx_s* mutex)
@@ -104,7 +109,7 @@ void mtx_unlock(struct mtx_s* mutex)
 		process_s* temp = mutex->list->first;
 		mutex->list->first = mutex->list->first->next;
 
-		FreeAllocateMemory((uint32_t*) temp); //TODO tester cette ligne
+		FreeAllocatedMemory((uint32_t*) temp); //TODO tester cette ligne
 	}
 	
 	//Pas de ctx_switch car le processus continue à s'éxecuter.

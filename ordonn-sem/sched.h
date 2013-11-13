@@ -3,7 +3,7 @@
 #ifndef __SCHED_H
 #define __SCHED_H
 
-static pcb_s* next_running;
+extern pcb_s * current_process;
 
 typedef struct pcb_list {
 	pcb_s* first;
