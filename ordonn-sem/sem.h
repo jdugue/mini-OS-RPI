@@ -36,6 +36,7 @@ void sem_down(struct sem_s* sem);
 
 mtx_s* mtx_init();
 void mtx_lock(struct mtx_s* mutex);
+void mtx_lock_queue(struct mtx_s* mutex);
 void mtx_unlock(struct mtx_s* mutex);
 
 #endif

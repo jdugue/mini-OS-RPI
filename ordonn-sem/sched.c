@@ -100,10 +100,6 @@ void __attribute__((naked)) ctx_switch() {
 	ENABLE_IRQ();
 	
 	__asm("rfefd sp!");
-		
-		
-	// Pourquoi on a mis ca la????
-	ENABLE_IRQ();
 }
 
 
