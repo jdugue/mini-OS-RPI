@@ -3,6 +3,6 @@ fs cmd
 wh cmd 12
 target remote:1234
 b notmain
-b ctx_switch
-b mtx_lock_queue
+b led_off
+b led_on
 source include.gdb
