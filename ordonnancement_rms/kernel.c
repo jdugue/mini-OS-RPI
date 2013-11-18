@@ -46,9 +46,9 @@ start_kernel ( void )
   init_hw();
   malloc_init((void *) HEAP_START);
 
-  create_process(&processus_A, 512,5,2);
-  create_process(&processus_B, 512,15,4);
-  create_process(&processus_C, 512,3,1);
+  create_process(&processus_A, 512,10,5);
+  create_process(&processus_B, 512,10,5);
+  //create_process(&processus_C, 512,3,1);
   
   start_sched();
   

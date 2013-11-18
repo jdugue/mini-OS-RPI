@@ -24,8 +24,7 @@ start_current_process()
 }
 
 int
-init_process(struct pcb_s *pcb, int stack_size, func_t* f, 
-							unsigned int period, unsigned int calcul)
+init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcul)
 {	
   /* Function and args */
   pcb->entry_point = f;
@@ -55,8 +54,7 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f,
 }
 
 int
-create_process(func_t* f, unsigned size, 
-					unsigned int period, unsigned int calcul)
+create_process(func_t* f, unsigned size, int period, int calcul)
 {
   struct pcb_s *pcb;
   pcb = (struct pcb_s*) malloc_alloc(sizeof(struct pcb_s));
@@ -124,7 +122,8 @@ schedule()
     current_process = &idle;
   } else {            
 	  /* Sinon -> le processus élu est trouve par l'algorithme RMS*/
-      select_next();
+      select_next(pcb);
+	  //current_process = pcb;
   }
 }
 
@@ -139,7 +138,7 @@ start_sched()
 {
   current_process = &idle;
   idle.next = ready_queue;
-  idle.period = 4294967295;
+  idle.period = 1000;
 
   ENABLE_IRQ();
 
@@ -148,8 +147,9 @@ start_sched()
   }
 }
 
-void select_next()
+void select_next(struct pcb_s* pcbs)
 {
+	current_process = pcbs;
 	struct pcb_s* pcb;
 	struct pcb_s* pcb_init;
 	struct pcb_s* pcb_selected;
@@ -195,5 +195,5 @@ void select_next()
 	}while(pcb != pcb_init);
 	
 	current_process = pcb_selected;
-	current_process->calcul_remaining--;
+	current_process->calcul_remaining--; 
 }
