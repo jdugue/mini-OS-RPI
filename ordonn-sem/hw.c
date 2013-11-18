@@ -11,7 +11,7 @@
 #define GPSET0  0x2020001C
 #define GPCLR0  0x20200028
 
-#define INTERVAL 0x00080000
+#define INTERVAL 0x00800000
 
 extern void PUT32 ( unsigned int, unsigned int );
 extern unsigned int GET32 ( unsigned int );
