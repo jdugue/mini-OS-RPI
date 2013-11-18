@@ -2,6 +2,5 @@ layout split
 fs cmd
 wh cmd 12
 target remote:1234
-b start_kernel
-b ctx_switch
+b select_next
 source include.gdb

@@ -24,7 +24,8 @@ start_current_process()
 }
 
 int
-init_process(struct pcb_s *pcb, int stack_size, func_t* f)
+init_process(struct pcb_s *pcb, int stack_size, func_t* f, 
+							unsigned int period, unsigned int calcul)
 {	
   /* Function and args */
   pcb->entry_point = f;
@@ -44,11 +45,18 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f)
   pcb->sp --;
   *(pcb->sp) = (unsigned int) &start_current_process;
   
+  /* SET RMS attributes */
+  pcb->calcul = calcul;
+  pcb->period = period;
+  //~ pcb->calcul_remaining = calcul;
+  //~ pcb->period_remaining = period;
+  
   return 1;
 }
 
 int
-create_process(func_t* f, unsigned size)
+create_process(func_t* f, unsigned size, 
+					unsigned int period, unsigned int calcul)
 {
   struct pcb_s *pcb;
   pcb = (struct pcb_s*) malloc_alloc(sizeof(struct pcb_s));
@@ -63,7 +71,7 @@ create_process(func_t* f, unsigned size)
   }
   
   ready_queue->next = pcb;
-  return init_process(pcb,size,f);
+  return init_process(pcb,size,f,period,calcul);
 }
 
 
@@ -114,8 +122,9 @@ schedule()
   if(pcb == NULL) {   /* Si pas de processus à élire -> idle */
     ready_queue = NULL;
     current_process = &idle;
-  } else {            /* Sinon -> le processus élu est le suivant */
-      current_process = pcb;
+  } else {            
+	  /* Sinon -> le processus élu est trouve par l'algorithme RMS*/
+      select_next();
   }
 }
 
@@ -130,10 +139,61 @@ start_sched()
 {
   current_process = &idle;
   idle.next = ready_queue;
+  idle.period = 4294967295;
 
   ENABLE_IRQ();
 
   while(1) {
     yield();
   }
+}
+
+void select_next()
+{
+	struct pcb_s* pcb;
+	struct pcb_s* pcb_init;
+	struct pcb_s* pcb_selected;
+
+	if (current_process == &idle) {
+		pcb_init  = idle.next;
+	} else {
+		pcb_init = current_process;
+	}
+
+	pcb_selected = &idle;
+	pcb = pcb_init;
+	
+ 
+    do
+    {			
+		// Gestion des remainings
+		if ( pcb->period_remaining == 0 )
+		{
+			pcb->period_remaining = pcb->period;
+			pcb->calcul_remaining = pcb->calcul;
+		}
+  
+		// Selection du process
+		if ( pcb->state == READY || pcb->state == NEW)
+		{
+			if ( pcb->calcul_remaining > 0 )
+			{
+				if( pcb->period < pcb_selected->period )
+				{
+					pcb_selected = pcb;
+				}
+				else if ( pcb->period == pcb_selected->period && 
+					pcb->period_remaining < pcb_selected->period_remaining )
+				{
+					pcb_selected = pcb;
+				}
+			}
+			pcb->period_remaining--;
+		}	
+		pcb = pcb->next; 
+		
+	}while(pcb != pcb_init);
+	
+	current_process = pcb_selected;
+	current_process->calcul_remaining--;
 }

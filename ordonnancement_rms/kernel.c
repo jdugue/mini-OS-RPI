@@ -26,6 +26,17 @@ processus_B()
   }
 }
 
+void
+processus_C()
+{
+  int i = 0;
+
+  while (1) {
+    while ( i++ < 2000000);
+    i = 0;
+  }
+}
+
 
 //------------------------------------------------------------------------
 int
@@ -35,8 +46,9 @@ start_kernel ( void )
   init_hw();
   malloc_init((void *) HEAP_START);
 
-  create_process(&processus_A, 512);
-  create_process(&processus_B, 512);
+  create_process(&processus_A, 512,5,2);
+  create_process(&processus_B, 512,15,4);
+  create_process(&processus_C, 512,3,1);
   
   start_sched();
   

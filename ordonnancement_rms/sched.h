@@ -19,17 +19,27 @@ struct pcb_s {
   void* args;
   
   unsigned int size;
-  char* stack_base;
+  char* stack_base; //sp
   enum pcb_state_e state;
 
   struct pcb_s *next;
+  
+  //RMS
+  unsigned int period;
+  unsigned int calcul;
+  
+  unsigned int period_remaining; // period remaining
+  unsigned int calcul_remaining;  // calcul remaining
+  
 };
 
-int create_process(func_t* f, unsigned size);
+int create_process(func_t* f, unsigned size, 
+			unsigned int period, unsigned int calcul);
 void yield();
 void start_sched();
 void schedule();
 void start_current_process();
+void select_next();
 
 
 #endif
