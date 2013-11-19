@@ -1,5 +1,6 @@
 #include "dispatcher.h"
 #include "sem.h"
+#include "hw.h"
 
 //struct ctx_s ctx_init;
 /*
@@ -28,7 +29,7 @@ funcA ()
 {
 	int cptA = 0;
 	while( 1 ) {
-		cptA ++;
+		led_on();
 	}
 }
 void
@@ -36,7 +37,7 @@ funcB ()
 {
 	int cptB = 1;
 	while( 1 ) {
-		cptB += 2 ;
+		led_off();
 	}
 }
 
@@ -88,16 +89,18 @@ notmain ( void )
   //current_ctx = &ctx_init;
   //switch_to(&ctx_A);
 
-	//create_process(funcA, 0);
-	//create_process(funcB, 0);
+	create_process(funcA, 0,2,1);
+	create_process(funcB, 0,2,1);
 	//start_scheduler();
 
+/*
 	int i;
 	for( i=0; i<5; i++)
 	{
 		chopsticks[i] = mtx_init();
 		create_process( philosopher, i );
 	}
+ */
 
 	start_scheduler();
 

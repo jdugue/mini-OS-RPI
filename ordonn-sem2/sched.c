@@ -6,7 +6,7 @@
 
 pcb_s * current_process;
 
-void create_process(func_t f, void* args){
+void create_process(func_t f, void* args, int period, int calcul){
 	
 	//on crée un process et un element de list	
 	pcb_s* nProcess = (pcb_s*) AllocateMemory(sizeof(pcb_s));
@@ -29,7 +29,7 @@ void create_process(func_t f, void* args){
 
 	nProcess->next = pList.first;  
 
-	init_pcb( nProcess, f, STACK_SIZE , args );
+	init_pcb( nProcess, f, STACK_SIZE , args, period, calcul );
 }
 
 void __attribute__((naked)) ctx_switch() {
@@ -108,9 +108,10 @@ void start_scheduler()
 {
 	//current_process = (pcb_s**) AllocateMemory(sizeof(pcb_s*));
 	pcb_s* tempProcess = (pcb_s*) AllocateMemory(sizeof(pcb_s));
-	init_pcb(tempProcess, 0, STACK_SIZE, 0);
+	init_pcb(tempProcess, 0, STACK_SIZE, 0, 1000, 1000);
 	tempProcess->state  = TERMINATED;
 	tempProcess->next = pList.first;
+	//pList.last->next = pList.first;
 	current_process = tempProcess;
 	//current_process = pList.first;
 	
@@ -134,6 +135,7 @@ void schedule() {
 void
 start_sched()
 {
+	/*
   current_process = &idle;
   idle.next = ready_queue;
   idle.period = 1000;
@@ -146,6 +148,7 @@ start_sched()
   while(1) {
     yield();
   }
+  */
 }
 
 void select_next(struct pcb_s* pcbs)
@@ -153,12 +156,10 @@ void select_next(struct pcb_s* pcbs)
 	//current_process = pcbs;
 
 	struct pcb_s* pcb;
-	struct pcb_s* pcb_init;
 	struct pcb_s* pcb_selected;
 
-	pcb_init  = ready_queue;
-	pcb_selected = &idle;
-	pcb = pcb_init;
+	pcb_selected = 0;
+	pcb = pList.first;
 
 	do
 	{
@@ -171,16 +172,21 @@ void select_next(struct pcb_s* pcbs)
 		
 		pcb->period_remaining--;
 		pcb = pcb->next; 
-	}while(pcb != pcb_init);
+	}while(pcb != pList.first);
 	
+	pcb = pList.first;
     do
     {			
 		// Selection du process
-		if ( pcb->state == READY || pcb->state == NEW)
+		if ( pcb->state == RUNNING || pcb->state == NEW)
 		{
 			if ( pcb->calcul_remaining )
 			{
-				if( pcb->period < pcb_selected->period )
+				if (!pcb_selected) 
+				{
+					pcb_selected = pcb;
+				}
+				else if( pcb->period < pcb_selected->period )
 				{
 					pcb_selected = pcb;
 				}
@@ -192,7 +198,7 @@ void select_next(struct pcb_s* pcbs)
 			}
 		}	
 		pcb = pcb->next; 
-	}while(pcb != pcb_init);
+	}while(pcb != pList.first);
 	
 
 	// ici selected = &idle
