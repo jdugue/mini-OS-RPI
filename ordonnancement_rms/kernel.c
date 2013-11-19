@@ -14,7 +14,7 @@ processus_A()
   while (1) 
   {
     led_off();
-    //while ( i++ < 2000000);
+    while ( i++ < 2000000);
     i = 0;
   }
   fin();
@@ -28,7 +28,7 @@ processus_B()
   while (1) 
   {
     led_on();
-    //while ( i++ < 2000000);
+    while ( i++ < 2000000);
     i = 0;
   }
   fin();

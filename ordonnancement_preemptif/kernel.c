@@ -20,7 +20,7 @@ processus_B()
   int i = 0;
 
   while (1) {
-    //led_off();
+    led_off();
     while ( i++ < 2000000);
     i = 0;
   }

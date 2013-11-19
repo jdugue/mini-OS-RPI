@@ -5,53 +5,46 @@ void __attribute__ ((naked))
 ctx_switch ( void )
 {
 
-	/* Disable interrupts */
 	DISABLE_IRQ();
 	
-  
-  /********* Save context of running process ********/
-  /*   Save PC and status register of interrupted task on SVC stack */	
-  __asm volatile("sub      lr, lr, #4");
-  __asm volatile("srsdb    sp!, 0x13");
-  
-  /*   Switch to SVC mode */	        
-  __asm volatile("cps	#0x13");
-  
-  /*   Save registers on SVC stack */					
-  __asm volatile("push    {r0-r12}");
+	__asm("sub lr, lr, #4");
+	__asm("srsdb sp!, #0x13");
+	__asm("cps #0x13");
 
-  
+	//Save r0-r12
+	//A vérifier : Pas de destination car par defaut push sur la pile
+	__asm volatile("push {r0-r12,lr}"); 
+	__asm("mov %0, sp": "=r"(current_process->sp));
 
-  /*   Save actual stack pointer */
-  __asm("mov %0, sp"
-  	: "=r"(current_process->sp));
+	
+	// Choisi le prochain processus a executer
+	//schedule();
+	select_next();
+	
+	if(current_process->state == NEW)
+	{
+		__asm("mov sp, %0" : : "r"(current_process->sp));
+		current_process->state = READY;
+		
+		// Rearme du timer
+		set_tick_and_enable_timer();
+		ENABLE_IRQ();
+		
+		current_process->entry_point(current_process->args);
+		current_process->state = TERMINATED;
+		ctx_switch();
 
-  /********* Choose next task ********/
-  schedule();
-  
-  /******* Restore context of elected process ********/
-  /*   Get stack pointer of the next process... */
-  __asm("mov sp, %0"
-  	:
-  	: "r"(current_process->sp));
-  
-
-  
-  if (current_process->state == NEW) {
-    
-    /* Just to avoid that wrong information appears when using 'bt' in gdb */
-    __asm("mov lr, #0x0");
-
-  } else {
-    /*   Restore non banked registers */
-    __asm volatile("pop     {r0-r12}");
-  }
-  
-    /* Set up delay before new interrupt and enable interrupts */
+	}
+	else if (current_process->state == READY)
+	{	
+		__asm("mov sp, %0" : : "r"(current_process->sp));
+		//Restituer les registres
+		__asm volatile("pop {r0-r12,lr}"); 
+	}
+	
+	// Rearme du timer
 	set_tick_and_enable_timer();
 	ENABLE_IRQ();
-
-  /* Jump to elected task, popping cpsr and pc from SVC stack  */
-  /* No need to explicitly enable IRQs as 'rfe' restore cpsr */
-  __asm volatile ("rfefd sp!");
+	
+	__asm("rfefd sp!");
 }

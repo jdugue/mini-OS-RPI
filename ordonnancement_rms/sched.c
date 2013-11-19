@@ -16,7 +16,7 @@ void
 start_current_process()
 {
   current_process->state = READY;
-  current_process->entry_point();
+  current_process->entry_point( current_process->args );
 
   /* The process is terminated */
   current_process->state = TERMINATED;
@@ -38,11 +38,6 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcu
   /* State and context */
   pcb->state = NEW;
   pcb->sp = ((uint32_t*) (pcb->stack_base + stack_size)) - 1;
-
-  /* Fill in the stack with CPSR and PC */
-  *(pcb->sp) = 0x53;
-  pcb->sp --;
-  *(pcb->sp) = (unsigned int) &start_current_process;
   
   /* SET RMS attributes */
   pcb->calcul = calcul;
@@ -201,5 +196,6 @@ void select_next(struct pcb_s* pcbs)
 	// ici passe plusiers fois dans la boucle, au moins 2
 	
 	current_process = pcb_selected;
+	//current_process = current_process->next;
 	current_process->calcul_remaining--; 
 }
