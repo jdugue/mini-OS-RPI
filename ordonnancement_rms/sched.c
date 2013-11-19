@@ -147,8 +147,6 @@ start_sched()
 
 void select_next(struct pcb_s* pcbs)
 {
-	//current_process = pcbs;
-
 	struct pcb_s* pcb;
 	struct pcb_s* pcb_init;
 	struct pcb_s* pcb_selected;

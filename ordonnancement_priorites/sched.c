@@ -24,7 +24,7 @@ start_current_process()
 }
 
 int
-init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcul)
+init_process(struct pcb_s *pcb, int stack_size, func_t* f, int priority )
 {	
   /* Function and args */
   pcb->entry_point = f;
@@ -40,16 +40,13 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcu
   pcb->sp = ((uint32_t*) (pcb->stack_base + stack_size)) - 1;
   
   /* SET RMS attributes */
-  pcb->calcul = calcul;
-  pcb->period = period;
-  pcb->calcul_remaining = 0;
-  pcb->period_remaining = 0;
-  
+  pcb->priority = priority;
+
   return 1;
 }
 
 int
-create_process(func_t* f, unsigned size, int period, int calcul)
+create_process(func_t* f, unsigned size, int priority )
 {
   struct pcb_s *pcb;
   pcb = (struct pcb_s*) malloc_alloc(sizeof(struct pcb_s));
@@ -64,7 +61,7 @@ create_process(func_t* f, unsigned size, int period, int calcul)
   }
   
   ready_queue->next = pcb;
-  return init_process(pcb,size,f,period,calcul);
+  return init_process(pcb,size,f,priority);
 }
 
 
@@ -133,10 +130,7 @@ start_sched()
 {
   current_process = &idle;
   idle.next = ready_queue;
-  idle.period = 1000;
-  idle.calcul = 1000;
-  idle.period_remaining = 0;
-  idle.calcul_remaining = 0;
+  idle.priority = 100000;
 
   //ENABLE_IRQ();
 
@@ -145,7 +139,7 @@ start_sched()
   }
 }
 
-void select_next()
+void select_next(struct pcb_s* pcbs)
 {
 	struct pcb_s* pcb;
 	struct pcb_s* pcb_init;
@@ -155,45 +149,19 @@ void select_next()
 	pcb_selected = &idle;
 	pcb = pcb_init;
 	
- 
-	do
-	{
-		// Gestion des remainings
-		if ( !pcb->period_remaining )
-		{
-			pcb->period_remaining = pcb->period;
-			pcb->calcul_remaining = pcb->calcul;
-		}
-		
-		pcb->period_remaining--;
-		pcb = pcb->next; 
-	}while(pcb != pcb_init);
-
 	do
 	{			
-
 		// Selection du process
-		if ( pcb->state == READY || pcb->state == NEW)
+		if ( pcb->state == READY || pcb->state == NEW )
 		{
-			if ( pcb->calcul_remaining > 0 )
+
+			if( pcb->priority < pcb_selected->priority )
 			{
-				if( pcb->period_remaining < pcb_selected->period_remaining )
-				{
-					pcb_selected = pcb;
-				}
-				else if ( pcb->period_remaining == pcb_selected->period_remaining && 
-					pcb->period < pcb_selected->period )
-				{
-					pcb_selected = pcb;
-				}
+				pcb_selected = pcb;
 			}
-	
 		}	
 		pcb = pcb->next; 
-
 	}while(pcb != pcb_init);
 
 	current_process = pcb_selected;
-	current_process->calcul_remaining--;
 }
-

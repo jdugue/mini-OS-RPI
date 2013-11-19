@@ -24,16 +24,11 @@ struct pcb_s {
 
   struct pcb_s *next;
   
-  //RMS
-  unsigned int period;
-  unsigned int calcul;
-  
-  unsigned int period_remaining; // period remaining
-  unsigned int calcul_remaining;  // calcul remaining
+  int priority;
   
 };
 
-int create_process(func_t* f, unsigned size, int period, int calcul);
+int create_process(func_t* f, unsigned size, int priority );
 void yield();
 void start_sched();
 void schedule();
