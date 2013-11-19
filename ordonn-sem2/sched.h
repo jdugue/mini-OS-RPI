@@ -12,7 +12,7 @@ typedef struct pcb_list {
 
 static pcb_list pList;
 
-void create_process(func_t f, void* args);
+void create_process(func_t f, void* args, int period, int calcul);
 void __attribute__((naked)) ctx_switch();
 void start_current_process();
 
