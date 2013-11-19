@@ -2,5 +2,5 @@ layout split
 fs cmd
 wh cmd 12
 target remote:1234
-b select_next
+b yield
 source include.gdb

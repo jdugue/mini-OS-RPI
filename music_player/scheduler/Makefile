@@ -1,4 +1,4 @@
-C_FILES=yield.c allocateMemory.c 
+C_FILES=sched.c allocateMemory.c 
 ROOT_DIR=..
 
 include $(ROOT_DIR)/common.mk

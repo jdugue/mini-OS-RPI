@@ -47,8 +47,8 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcu
   /* SET RMS attributes */
   pcb->calcul = calcul;
   pcb->period = period;
-  //~ pcb->calcul_remaining = calcul;
-  //~ pcb->period_remaining = period;
+  pcb->calcul_remaining = 0;
+  pcb->period_remaining = 0;
   
   return 1;
 }
@@ -139,8 +139,11 @@ start_sched()
   current_process = &idle;
   idle.next = ready_queue;
   idle.period = 1000;
+  idle.calcul = 1000;
+  idle.period_remaining = 0;
+  idle.calcul_remaining = 0;
 
-  ENABLE_IRQ();
+  //ENABLE_IRQ();
 
   while(1) {
     yield();
@@ -149,34 +152,35 @@ start_sched()
 
 void select_next(struct pcb_s* pcbs)
 {
-	current_process = pcbs;
+	//current_process = pcbs;
+
 	struct pcb_s* pcb;
 	struct pcb_s* pcb_init;
 	struct pcb_s* pcb_selected;
 
-	if (current_process == &idle) {
-		pcb_init  = idle.next;
-	} else {
-		pcb_init = current_process;
-	}
-
+	pcb_init  = ready_queue;
 	pcb_selected = &idle;
 	pcb = pcb_init;
-	
- 
-    do
-    {			
+
+	do
+	{
 		// Gestion des remainings
-		if ( pcb->period_remaining == 0 )
+		if ( !pcb->period_remaining )
 		{
 			pcb->period_remaining = pcb->period;
 			pcb->calcul_remaining = pcb->calcul;
 		}
-  
+		
+		pcb->period_remaining--;
+		pcb = pcb->next; 
+	}while(pcb != pcb_init);
+	
+    do
+    {			
 		// Selection du process
 		if ( pcb->state == READY || pcb->state == NEW)
 		{
-			if ( pcb->calcul_remaining > 0 )
+			if ( pcb->calcul_remaining )
 			{
 				if( pcb->period < pcb_selected->period )
 				{
@@ -188,11 +192,13 @@ void select_next(struct pcb_s* pcbs)
 					pcb_selected = pcb;
 				}
 			}
-			pcb->period_remaining--;
 		}	
 		pcb = pcb->next; 
-		
 	}while(pcb != pcb_init);
+	
+
+	// ici selected = &idle
+	// ici passe plusiers fois dans la boucle, au moins 2
 	
 	current_process = pcb_selected;
 	current_process->calcul_remaining--; 

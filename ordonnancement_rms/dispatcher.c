@@ -4,6 +4,11 @@
 void __attribute__ ((naked))
 ctx_switch ( void )
 {
+
+	/* Disable interrupts */
+	DISABLE_IRQ();
+	
+  
   /********* Save context of running process ********/
   /*   Save PC and status register of interrupted task on SVC stack */	
   __asm volatile("sub      lr, lr, #4");
@@ -15,8 +20,7 @@ ctx_switch ( void )
   /*   Save registers on SVC stack */					
   __asm volatile("push    {r0-r12}");
 
-  /* Disable interrupts */
-  DISABLE_IRQ();
+  
 
   /*   Save actual stack pointer */
   __asm("mov %0, sp"
@@ -31,8 +35,7 @@ ctx_switch ( void )
   	:
   	: "r"(current_process->sp));
   
-  /* Set up delay before new interrupt and enable interrupts */
-  set_tick_and_enable_timer();
+
   
   if (current_process->state == NEW) {
     
@@ -43,6 +46,10 @@ ctx_switch ( void )
     /*   Restore non banked registers */
     __asm volatile("pop     {r0-r12}");
   }
+  
+    /* Set up delay before new interrupt and enable interrupts */
+	set_tick_and_enable_timer();
+	ENABLE_IRQ();
 
   /* Jump to elected task, popping cpsr and pc from SVC stack  */
   /* No need to explicitly enable IRQs as 'rfe' restore cpsr */

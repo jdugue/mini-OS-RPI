@@ -33,8 +33,7 @@ struct pcb_s {
   
 };
 
-int create_process(func_t* f, unsigned size, 
-			unsigned int period, unsigned int calcul);
+int create_process(func_t* f, unsigned size, int period, int calcul);
 void yield();
 void start_sched();
 void schedule();

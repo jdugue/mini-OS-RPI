@@ -1,9 +1,9 @@
-C_FILES=sched.c allocateMemory.c 
+C_FILES=process.c sched.c allocateMemory.c 
 ROOT_DIR=..
 
 include $(ROOT_DIR)/common.mk
 
-all: sched.a
+all: process.a sched.a
 
 sched.a : $(OBJS)
 

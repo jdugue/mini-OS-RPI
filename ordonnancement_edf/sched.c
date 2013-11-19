@@ -24,8 +24,7 @@ start_current_process()
 }
 
 int
-init_process(struct pcb_s *pcb, int stack_size, func_t* f, 
-							unsigned int period, unsigned int calcul)
+init_process(struct pcb_s *pcb, int stack_size, func_t* f, int period, int calcul)
 {	
   /* Function and args */
   pcb->entry_point = f;
@@ -55,8 +54,7 @@ init_process(struct pcb_s *pcb, int stack_size, func_t* f,
 }
 
 int
-create_process(func_t* f, unsigned size, 
-					unsigned int period, unsigned int calcul)
+create_process(func_t* f, unsigned size, int period, int calcul)
 {
   struct pcb_s *pcb;
   pcb = (struct pcb_s*) malloc_alloc(sizeof(struct pcb_s));
